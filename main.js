@@ -4,22 +4,48 @@ const erreicht = [1200, 600, 200, 150, 2150];
 const richtwert = [1800, 600, 400, 500, 3300];
 const luecke = richtwert.map((r, i) => Math.max(0, r - erreicht[i]));
 
-// --- Chart.js Diagramm ---
+// --- Chart.js Diagramm (gestapelt) ---
 const ctx = document.getElementById("chart").getContext("2d");
 const chart = new Chart(ctx, {
     type: "bar",
     data: {
         labels,
         datasets: [
-            { label: "Bereits erreicht", data: erreicht, backgroundColor: "green" },
-            { label: "Richtwert", data: richtwert, backgroundColor: "blue" },
-            { label: "Versorgungslücke", data: luecke, backgroundColor: "red" },
+            {
+                label: "Bereits erreicht",
+                data: erreicht,
+                backgroundColor: "green",
+            },
+            {
+                label: "Versorgungslücke",
+                data: luecke,
+                backgroundColor: "red",
+            },
+            {
+                label: "Richtwert (nur zur Referenz)",
+                data: richtwert,
+                backgroundColor: "blue",
+                stack: "reference",
+                borderColor: "blue",
+                borderWidth: 1,
+                type: "bar",
+                order: 0,
+                barThickness: 30,
+                categoryPercentage: 0.5,
+                datalabels: { display: false },
+            },
         ],
     },
     options: {
         responsive: true,
-        plugins: { title: { display: true, text: "Altersvorsorge: Richtwerte vs. Ist" } },
-        scales: { y: { beginAtZero: true } },
+        plugins: {
+            title: { display: true, text: "Altersvorsorge: Richtwerte vs. Ist (gestapelt)" },
+            legend: { position: "top" },
+        },
+        scales: {
+            x: { stacked: true },
+            y: { stacked: true, beginAtZero: true },
+        },
     },
 });
 
