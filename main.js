@@ -35,7 +35,7 @@ const chart = new Chart(ctx, {
     options: {
         responsive: true,
         plugins: {
-            title: { display: true, text: "Altersvorsorge: Gestapelt vs. Richtwert" },
+            title: { display: true, text: "Altersvorsorge: IST vs. SOLL" },
             legend: { position: "top" },
         },
         scales: {
