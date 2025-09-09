@@ -4,7 +4,7 @@ const erreicht = [1200, 600, 200, 150, 2150];
 const richtwert = [1800, 600, 400, 500, 3300];
 const luecke = richtwert.map((r, i) => Math.max(0, r - erreicht[i]));
 
-// --- Chart.js Diagramm: gestapelt + Richtwert direkt daneben ---
+// --- Chart.js Diagramm ---
 const ctx = document.getElementById("chart").getContext("2d");
 
 const chart = new Chart(ctx, {
@@ -41,8 +41,8 @@ const chart = new Chart(ctx, {
         scales: {
             x: {
                 stacked: true,
-                categoryPercentage: 1.0, // maximale Breite pro Kategorie
-                barPercentage: 1.0, // Balken maximal breit
+                categoryPercentage: 1.0,
+                barPercentage: 1.0,
             },
             y: {
                 stacked: true,
@@ -57,17 +57,16 @@ async function generatePDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
 
-    // Logo laden und einfügen
     const logoImg = new Image();
     logoImg.src = "./logo.png";
     await new Promise((resolve) => {
         logoImg.onload = resolve;
     });
-    // Füge das Logo oben links ein (Größe und Position ggf. anpassen)
+
     pdf.addImage(logoImg, "PNG", 15, 8, 30, 15);
 
     pdf.setFontSize(18).setFont("helvetica", "bold");
-    pdf.text("Auswertung Altersvorsorge", 15, 35); // Titel etwas nach rechts, damit er nicht über dem Logo liegt
+    pdf.text("Auswertung Altersvorsorge", 15, 35);
 
     pdf.setFontSize(11).setFont("helvetica", "normal");
     const text =
@@ -76,10 +75,9 @@ async function generatePDF() {
         "Aktuell stehen Ihnen aus der gesetzlichen Rentenversicherung sowie durch Ihr im Alter abbezahltes Wohneigentum bereits feste Werte zur Verfügung. " +
         "Diese bilden eine solide Basis, reichen jedoch allein nicht aus, um den Richtwert vollständig zu erreichen.\n\n" +
         "Aus der Gegenüberstellung ergibt sich eine noch bestehende Versorgungslücke, die durch private Vorsorgeprodukte oder ergänzende Anlageformen geschlossen werden sollte.";
-    // Text beginnt unterhalb von Logo und Titel (z.B. y=35)
+
     pdf.text(text, 15, 45, { maxWidth: 180 });
 
-    // Tabelle ins PDF
     const startY = 95;
     const rowHeight = 8;
     pdf.setFontSize(12).setFont("helvetica", "bold");
@@ -109,11 +107,9 @@ async function generatePDF() {
         pdf.text(r[2], 140, y + 6);
     });
 
-    // Diagramm einfügen
     const chartImg = chart.toBase64Image();
     pdf.addImage(chartImg, "PNG", 15, startY + rowHeight * (rows.length + 2), 180, 100);
 
-    // Versorgungslücke
     pdf.setFont("helvetica", "bold").setFontSize(13);
     pdf.text("Ermittelte Versorgungslücke: 1.150 € pro Monat", 15, startY + rowHeight * (rows.length + 2) + 110);
 
