@@ -12,12 +12,65 @@
 </head>
 
 <body>
-	<h1>Auswertung Altersvorsorge</h1>
-	<p>Mit einem Klick auf den Button wird der One-Pager als PDF generiert.</p>
+	<div class="content">
+		<h1>Auswertung Altersvorsorge</h1>
 
-	<button onclick="generatePDF()">📄 PDF erstellen</button>
+		<p>Der aktuelle Stand Ihrer Altersvorsorge wurde anhand der zu erwartenden Ausgaben im Ruhestand sowie gängiger
+			Richtwerte verglichen.
+			Um den gewohnten Lebensstandard aufrechtzuerhalten, wird empfohlen, etwa 70–80 % des letzten Nettoeinkommens
+			als monatliche Altersrente zur Verfügung zu haben.</p>
 
-	<canvas id="chart"></canvas>
+		<p>Aktuell stehen Ihnen aus der gesetzlichen Rentenversicherung sowie durch Ihr im Alter abbezahltes
+			Wohneigentum bereits feste Werte zur Verfügung.
+			Diese bilden eine solide Basis, reichen jedoch allein nicht aus, um den Richtwert vollständig zu erreichen.
+		</p>
+
+		<p>Aus der Gegenüberstellung ergibt sich eine noch bestehende Versorgungslücke, die durch private
+			Vorsorgeprodukte oder ergänzende Anlageformen geschlossen werden sollte.</p>
+
+		<table id="vorsorgeTable">
+			<thead>
+				<tr>
+					<th>Vorsorgequelle</th>
+					<th>Bereits erreicht (€ / Monat)</th>
+					<th>Richtwert (€ / Monat)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Gesetzliche Rente</td>
+					<td>1.200</td>
+					<td>1.800</td>
+				</tr>
+				<tr>
+					<td>Wohneigentum</td>
+					<td>600</td>
+					<td>600</td>
+				</tr>
+				<tr>
+					<td>Betriebliche AV</td>
+					<td>200</td>
+					<td>400</td>
+				</tr>
+				<tr>
+					<td>Private Vorsorge</td>
+					<td>150</td>
+					<td>500</td>
+				</tr>
+				<tr>
+					<td><b>Gesamtsumme</b></td>
+					<td>2.150</td>
+					<td>3.300</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="canvas-container">
+			<canvas id="chart" height="100"></canvas>
+		</div>
+
+
+		<button onclick="generatePDF()">📄 PDF erstellen</button>
+	</div>
 </body>
 
 </html>

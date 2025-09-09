@@ -4,47 +4,50 @@ const erreicht = [1200, 600, 200, 150, 2150];
 const richtwert = [1800, 600, 400, 500, 3300];
 const luecke = richtwert.map((r, i) => Math.max(0, r - erreicht[i]));
 
-// --- Chart.js Diagramm (gestapelt) ---
+// --- Chart.js Diagramm: gestapelt + Richtwert direkt daneben ---
 const ctx = document.getElementById("chart").getContext("2d");
+
 const chart = new Chart(ctx, {
     type: "bar",
     data: {
-        labels,
+        labels: labels,
         datasets: [
             {
                 label: "Bereits erreicht",
                 data: erreicht,
                 backgroundColor: "green",
+                stack: "stack1",
             },
             {
                 label: "Versorgungslücke",
                 data: luecke,
                 backgroundColor: "red",
+                stack: "stack1",
             },
             {
-                label: "Richtwert (nur zur Referenz)",
+                label: "Richtwert",
                 data: richtwert,
                 backgroundColor: "blue",
-                stack: "reference",
-                borderColor: "blue",
-                borderWidth: 1,
-                type: "bar",
-                order: 0,
-                barThickness: 30,
-                categoryPercentage: 0.5,
-                datalabels: { display: false },
+                stack: "stack2",
             },
         ],
     },
     options: {
         responsive: true,
         plugins: {
-            title: { display: true, text: "Altersvorsorge: Richtwerte vs. Ist (gestapelt)" },
+            title: { display: true, text: "Altersvorsorge: Gestapelt vs. Richtwert" },
             legend: { position: "top" },
         },
         scales: {
-            x: { stacked: true },
-            y: { stacked: true, beginAtZero: true },
+            x: {
+                stacked: true,
+                categoryPercentage: 1.0, // maximale Breite pro Kategorie
+                barPercentage: 1.0, // Balken maximal breit
+            },
+            y: {
+                stacked: true,
+                beginAtZero: true,
+            },
         },
     },
 });
@@ -53,12 +56,9 @@ const chart = new Chart(ctx, {
 async function generatePDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
-
-    // Titel
     pdf.setFontSize(18).setFont("helvetica", "bold");
     pdf.text("Auswertung Altersvorsorge", 15, 20);
 
-    // Fließtext
     pdf.setFontSize(11).setFont("helvetica", "normal");
     const text =
         "Der aktuelle Stand Ihrer Altersvorsorge wurde anhand der zu erwartenden Ausgaben im Ruhestand sowie gängiger Richtwerte verglichen. " +
@@ -68,35 +68,43 @@ async function generatePDF() {
         "Aus der Gegenüberstellung ergibt sich eine noch bestehende Versorgungslücke, die durch private Vorsorgeprodukte oder ergänzende Anlageformen geschlossen werden sollte.";
     pdf.text(text, 15, 30, { maxWidth: 180 });
 
-    // Tabelle
-    const headers = ["Vorsorgequelle", "Bereits erreicht", "Richtwert"];
-    const rows = [
-        ["Gesetzliche Rente", "1.200 €", "1.800 €"],
-        ["Wohneigentum", "600 €", "600 €"],
-        ["Betriebliche AV", "200 €", "400 €"],
-        ["Private Vorsorge", "150 €", "500 €"],
-        ["Gesamtsumme", "2.150 €", "3.300 €"],
-    ];
-
-    let startY = 90;
+    // Tabelle ins PDF
+    const startY = 90;
+    const rowHeight = 8;
+    pdf.setFontSize(12).setFont("helvetica", "bold");
     pdf.setFillColor(0, 123, 255);
     pdf.setTextColor(255, 255, 255);
-    pdf.rect(15, startY, 180, 8, "F");
-    pdf.text(headers.join("   "), 20, startY + 6);
+    pdf.rect(15, startY, 180, rowHeight, "F");
+    pdf.text("Vorsorgequelle", 20, startY + 6);
+    pdf.text("Bereits erreicht", 90, startY + 6);
+    pdf.text("Richtwert", 140, startY + 6);
 
-    pdf.setTextColor(0, 0, 0);
-    rows.forEach((row, i) => {
-        pdf.text(row.join("   "), 20, startY + 15 + i * 8);
+    pdf.setFont("helvetica", "normal").setTextColor(0, 0, 0);
+    const rows = [
+        ["Gesetzliche Rente", "1.200", "1.800"],
+        ["Wohneigentum", "600", "600"],
+        ["Betriebliche AV", "200", "400"],
+        ["Private Vorsorge", "150", "500"],
+        ["Gesamtsumme", "2.150", "3.300"],
+    ];
+
+    rows.forEach((r, i) => {
+        const y = startY + rowHeight * (i + 1);
+        if (i % 2 === 0) pdf.setFillColor(245, 245, 245);
+        else pdf.setFillColor(255, 255, 255);
+        pdf.rect(15, y, 180, rowHeight, "F");
+        pdf.text(r[0], 20, y + 6);
+        pdf.text(r[1], 90, y + 6);
+        pdf.text(r[2], 140, y + 6);
     });
 
     // Diagramm einfügen
     const chartImg = chart.toBase64Image();
-    pdf.addImage(chartImg, "PNG", 15, startY + 60, 180, 100);
+    pdf.addImage(chartImg, "PNG", 15, startY + rowHeight * (rows.length + 2), 180, 100);
 
     // Versorgungslücke
-    pdf.setFontSize(13).setFont("helvetica", "bold");
-    pdf.text("Ermittelte Versorgungslücke: 1.150 € pro Monat", 15, startY + 170);
+    pdf.setFont("helvetica", "bold").setFontSize(13);
+    pdf.text("Ermittelte Versorgungslücke: 1.150 € pro Monat", 15, startY + rowHeight * (rows.length + 2) + 110);
 
-    // PDF speichern
     pdf.save("altersvorsorge_onepager.pdf");
 }
