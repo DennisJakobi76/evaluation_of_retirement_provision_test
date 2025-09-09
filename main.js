@@ -56,8 +56,18 @@ const chart = new Chart(ctx, {
 async function generatePDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
+
+    // Logo laden und einfügen
+    const logoImg = new Image();
+    logoImg.src = "./logo.png";
+    await new Promise((resolve) => {
+        logoImg.onload = resolve;
+    });
+    // Füge das Logo oben links ein (Größe und Position ggf. anpassen)
+    pdf.addImage(logoImg, "PNG", 15, 8, 30, 15);
+
     pdf.setFontSize(18).setFont("helvetica", "bold");
-    pdf.text("Auswertung Altersvorsorge", 15, 20);
+    pdf.text("Auswertung Altersvorsorge", 15, 35); // Titel etwas nach rechts, damit er nicht über dem Logo liegt
 
     pdf.setFontSize(11).setFont("helvetica", "normal");
     const text =
@@ -66,10 +76,11 @@ async function generatePDF() {
         "Aktuell stehen Ihnen aus der gesetzlichen Rentenversicherung sowie durch Ihr im Alter abbezahltes Wohneigentum bereits feste Werte zur Verfügung. " +
         "Diese bilden eine solide Basis, reichen jedoch allein nicht aus, um den Richtwert vollständig zu erreichen.\n\n" +
         "Aus der Gegenüberstellung ergibt sich eine noch bestehende Versorgungslücke, die durch private Vorsorgeprodukte oder ergänzende Anlageformen geschlossen werden sollte.";
-    pdf.text(text, 15, 30, { maxWidth: 180 });
+    // Text beginnt unterhalb von Logo und Titel (z.B. y=35)
+    pdf.text(text, 15, 45, { maxWidth: 180 });
 
     // Tabelle ins PDF
-    const startY = 90;
+    const startY = 95;
     const rowHeight = 8;
     pdf.setFontSize(12).setFont("helvetica", "bold");
     pdf.setFillColor(0, 123, 255);
