@@ -19,60 +19,44 @@
 		<h1>Auswertung Altersvorsorge</h1>
 
 		<div class="text-container">
-			<p>Der aktuelle Stand Ihrer Altersvorsorge wurde anhand der zu erwartenden Ausgaben im Ruhestand sowie
-				gängiger
-				Richtwerte verglichen.
-				Um den gewohnten Lebensstandard aufrechtzuerhalten, wird empfohlen, etwa 70–80 % des letzten
-				Nettoeinkommens
-				als monatliche Altersrente zur Verfügung zu haben.</p>
-
-			<p>Aktuell stehen Ihnen aus der gesetzlichen Rentenversicherung sowie durch Ihr im Alter abbezahltes
-				Wohneigentum bereits feste Werte zur Verfügung.
-				Diese bilden eine solide Basis, reichen jedoch allein nicht aus, um den Richtwert vollständig zu
-				erreichen.
+			<p>
+				Diese Auswertung stellt Ihre aktuelle Altersvorsorgesituation (Stand 2025) dar
+				und ergänzt eine Hochrechnung bis zum Jahr 2050 unter Annahme einer jährlichen Inflationsrate von
+				2&nbsp;%.
+				Berücksichtigt werden die einzelnen Vorsorgebausteine – gesetzliche Rente, Mieteinnahmen, betriebliche
+				sowie private Vorsorge.
 			</p>
 
-			<p>Aus der Gegenüberstellung ergibt sich eine noch bestehende Versorgungslücke, die durch private
-				Vorsorgeprodukte oder ergänzende Anlageformen geschlossen werden sollte.</p>
+			<p>
+				Der empfohlene Richtwert liegt bei etwa 80&nbsp;% des letzten Nettoeinkommens.
+				Zusätzlich wurde der nach DIN&nbsp;77230 definierte Mindestsollwert berechnet,
+				der sich am gesetzlichen Mindestlohn orientiert und als gelbe Referenzlinie in der Grafik hervorgehoben
+				ist.
+			</p>
+
+			<p>
+				Diese Auswertung wurde in Anlehnung an die DIN&nbsp;77230 erstellt.
+				Aus der Gegenüberstellung ergibt sich eine Versorgungslücke,
+				die langfristig durch gezielte Vorsorgemaßnahmen geschlossen werden sollte.
+			</p>
 		</div>
+
+
+
 
 
 		<table id="vorsorgeTable">
 			<thead>
 				<tr>
 					<th>Vorsorgequelle</th>
-					<th>Bereits erreicht (€ / Monat)</th>
-					<th>Richtwert (€ / Monat)</th>
+					<th>Bereits erreicht 2025<br>(€ / Monat)</th>
+					<th>Projektion 2050<br>(€ / Monat)</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td>Gesetzliche Rente</td>
-					<td>1.200</td>
-					<td>1.800</td>
-				</tr>
-				<tr>
-					<td>Wohneigentum</td>
-					<td>600</td>
-					<td>600</td>
-				</tr>
-				<tr>
-					<td>Betriebliche AV</td>
-					<td>200</td>
-					<td>400</td>
-				</tr>
-				<tr>
-					<td>Private Vorsorge</td>
-					<td>150</td>
-					<td>500</td>
-				</tr>
-				<tr>
-					<td><b>Gesamtsumme</b></td>
-					<td>2.150</td>
-					<td>3.300</td>
-				</tr>
+			<tbody id="vorsorgeTableBody">
 			</tbody>
 		</table>
+
 		<div class="canvas-container">
 			<canvas id="chart" height="100"></canvas>
 		</div>

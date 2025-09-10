@@ -33,7 +33,7 @@ h1 {
 
 .text-container {
     max-width: 800px;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* vorher 20px, jetzt kleinerer Abstand */
     text-align: left;
     line-height: 1.5;
 }
@@ -58,9 +58,9 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 canvas {
-    max-width: 800px;
-    margin: 20px 0;
-    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #f2f2f2;
 }
 button {
     padding: 8px 16px;
@@ -69,9 +69,10 @@ button {
 }
 
 .canvas-container {
-    width: 100%;
-    height: auto;
+    width: 50%; /* gleiche Breite wie Tabelle */
+    height: 550px; /* mehr Höhe fürs Diagramm */
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 20px auto; /* etwas Abstand */
 }
