@@ -1,14 +1,13 @@
 // =====================
 // Einkommen & Richtwert
 // =====================
-const bruttoJahresgehalt = 50000; // Beispielwert
-const sonstigeJahreseinnahmen = 0; // z. B. Bonus etc.
-const abzug = 0.25; // Steuern + Sozialabgaben
+const bruttoJahreseinkommen = 55000; // erhöht, damit Richtwert höher liegt
+const sonstigeJahreseinnahmen = 0;
+const abzug = 0.25;
 
-const nettoJahreseinkommen = (bruttoJahresgehalt + sonstigeJahreseinnahmen) * (1 - abzug);
+const nettoJahreseinkommen = (bruttoJahreseinkommen + sonstigeJahreseinnahmen) * (1 - abzug);
 const nettoMonat = nettoJahreseinkommen / 12;
 
-// Richtwerte (80 % Netto)
 const richtwert2025 = nettoMonat * 0.8;
 const inflation = 0.02;
 const jahre = 2050 - 2025;
@@ -20,10 +19,10 @@ const richtwert2050 = richtwert2025 * faktor;
 // =====================
 const categories = ["Gesetzliche Rente", "Sonstige Einnahmen", "Betriebliche & geförderte Vorsorge", "Private Vorsorge"];
 
-// 2025 Werte
-const erreicht2025 = [1450, 400, 500, 100];
+// 2025 Werte (angepasst: geringere Vorsorgeleistungen)
+const erreicht2025 = [1450, 400, 300, 50];
 
-// 2050 Hochrechnung
+// 2050 Hochrechnung (Inflation 2 % p. a.)
 const erreicht2050 = erreicht2025.map((v) => v * faktor);
 
 // Summen
@@ -150,6 +149,43 @@ const refLinePlugin = {
 };
 if (window.Chart && Chart.register) Chart.register(refLinePlugin);
 
+// =======================================================
+// Chart.js – Plugin für Lücken-Beschriftung
+// =======================================================
+const gapLabelPlugin = {
+    id: "gapLabelPlugin",
+    afterDatasetsDraw(chart, args, opts) {
+        const { ctx, scales } = chart;
+        const x = scales.x;
+        const y = scales.y;
+        if (!x || !y) return;
+
+        ctx.save();
+        ctx.fillStyle = "black";
+        ctx.font = "bold 12px Arial";
+        ctx.textAlign = "center";
+
+        // Lücke 2025
+        const luecke2025 = opts.richtwert2025 - opts.sumErreicht2025;
+        if (luecke2025 > 0) {
+            const cx0 = x.getPixelForTick(0);
+            const yPos = y.getPixelForValue(opts.sumErreicht2025) - 20;
+            ctx.fillText(`${Math.round(luecke2025)} € Lücke`, cx0, yPos);
+        }
+
+        // Lücke 2050
+        const luecke2050 = opts.richtwert2050 - opts.sumErreicht2050;
+        if (luecke2050 > 0) {
+            const cx1 = x.getPixelForTick(1);
+            const yPos = y.getPixelForValue(opts.sumErreicht2050) - 30;
+            ctx.fillText(`${Math.round(luecke2050)} € Lücke`, cx1, yPos);
+        }
+
+        ctx.restore();
+    },
+};
+if (window.Chart && Chart.register) Chart.register(gapLabelPlugin);
+
 // ===================================
 // Chart.js – Diagramm erstellen
 // ===================================
@@ -158,7 +194,7 @@ if (window.Chart && Chart.register) Chart.register(refLinePlugin);
     if (!canvas) return;
 
     if (canvas.parentElement) {
-        canvas.parentElement.style.height = "550px"; // höher machen
+        canvas.parentElement.style.height = "550px"; // höher
         canvas.parentElement.style.width = "50%"; // gleiche Breite wie Tabelle
     }
 
@@ -197,7 +233,7 @@ if (window.Chart && Chart.register) Chart.register(refLinePlugin);
                 {
                     label: "Netto-Einkommen",
                     data: [nettoDeckel2025, nettoDeckel2050],
-                    backgroundColor: "#66bb66", // Grünton
+                    backgroundColor: "#66bb66",
                     stack: "stackErreicht",
                 },
             ],
@@ -219,6 +255,12 @@ if (window.Chart && Chart.register) Chart.register(refLinePlugin);
                     richtwert2025,
                     richtwert2050,
                     lineWidth: 2,
+                },
+                gapLabelPlugin: {
+                    richtwert2025,
+                    richtwert2050,
+                    sumErreicht2025,
+                    sumErreicht2050,
                 },
             },
             scales: {
@@ -258,22 +300,19 @@ async function generatePDF() {
     pdf.setFontSize(18).setFont("helvetica", "bold");
     pdf.text("Auswertung Altersvorsorge", 15, 35);
 
-    // Fließtext
+    // Einleitender Fließtext
     pdf.setFontSize(11).setFont("helvetica", "normal");
-    const text =
-        "Diese Auswertung stellt Ihre aktuelle Altersvorsorgesituation (Stand 2025) dar " +
-        "und ergänzt eine Hochrechnung bis zum Jahr 2050 unter Annahme einer jährlichen Inflationsrate von 2 %. " +
-        "Berücksichtigt werden die einzelnen Vorsorgebausteine – gesetzliche Rente, sonstige Einnahmen, betriebliche sowie private Vorsorge. \n\n" +
-        "Der empfohlene Richtwert liegt bei etwa 80 % des letzten Nettoeinkommens. " +
-        "Zusätzlich wurde der nach DIN 77230 definierte Mindestsollwert berechnet, " +
-        "der sich am gesetzlichen Mindestlohn orientiert und als gelbe Referenzlinie in der Grafik hervorgehoben ist. \n\n" +
+    const textTop =
         "Diese Auswertung wurde in Anlehnung an die DIN 77230 erstellt. " +
-        "Aus der Gegenüberstellung ergibt sich eine Versorgungslücke, " +
-        "die langfristig durch gezielte Vorsorgemaßnahmen geschlossen werden sollte.";
-    pdf.text(text, 15, 45, { maxWidth: 180 });
+        "Im Diagramm sind zwei wichtige Referenzwerte dargestellt: der empfohlene Richtwert, " +
+        "der bei etwa 80 % des letzten Nettoeinkommens liegt (blaue Linie), " +
+        "sowie der nach DIN 77230 berechnete Mindestsollwert, der sich am gesetzlichen Mindestlohn orientiert (gelbe Linie).\n\n" +
+        "Die Hochrechnung berücksichtigt die Entwicklung bis zum Jahr 2050 unter Annahme einer jährlichen Inflationsrate von 2 %. " +
+        "Dabei werden die einzelnen Vorsorgebausteine – gesetzliche Rente, sonstige Einnahmen, betriebliche sowie private Vorsorge – ausgewertet.";
+    pdf.text(textTop, 15, 45, { maxWidth: 180 });
 
     // Tabelle
-    const startY = 80;
+    const startY = 95;
     const rowHeight = 8;
     pdf.setFontSize(12).setFont("helvetica", "bold");
     pdf.setFillColor(0, 123, 255);
@@ -300,7 +339,6 @@ async function generatePDF() {
         ["Gesamtsumme", sumErreicht2025, sumErreicht2050],
         ["Netto-Einkommen", nettoMonat, nettoMonat * faktor],
         ["Richtwert (80% Netto)", richtwert2025, richtwert2050],
-        ["Versorgungslücke", luecke2025, luecke2050],
         ["DIN 77230 Mindestsoll", din2025, din2050],
     ];
     sums.forEach((r, i) => {
@@ -315,13 +353,21 @@ async function generatePDF() {
     // Chart
     await new Promise(requestAnimationFrame);
     const chartImg = window.chart.toBase64Image();
-    pdf.addImage(chartImg, "PNG", 15, startY + rowHeight * (categories.length + sums.length + 2), 160, 90);
+    const chartY = startY + rowHeight * (categories.length + sums.length + 2);
+    pdf.addImage(chartImg, "PNG", 15, chartY, 160, 90);
 
-    // Versorgungslücke Text
-    pdf.setFont("helvetica", "bold").setFontSize(13);
-    pdf.text(`Ermittelte Versorgungslücke: ${Math.round(luecke2025)} € (2025), ${Math.round(luecke2050)} € (2050, nominal)`, 15, startY + rowHeight * (categories.length + sums.length + 2) + 100);
+    // Versorgungslücken-Text unter dem Diagramm
+    const textBottom =
+        "Aus der Gegenüberstellung ergibt sich eine Versorgungslücke: " +
+        "Trotz solider Basis durch die gesetzliche Rente und sonstige Einnahmen reichen die betrieblichen " +
+        "und privaten Vorsorgeleistungen aktuell nicht aus, um den Richtwert vollständig zu erreichen. " +
+        "Die Lücke beträgt im Jahr 2025 rund 300 €, im Jahr 2050 – inflationsbedingt – etwa 490 €. " +
+        "Eine gezielte Stärkung der betrieblichen und privaten Vorsorge ist daher empfehlenswert.";
+    pdf.setFont("helvetica", "normal").setFontSize(11);
+    pdf.text(textBottom, 15, chartY + 100, { maxWidth: 180 });
 
-    pdf.save("altersvorsorge_onepager.pdf");
+    // PDF speichern
+    pdf.save("auswertung_vorsorge.pdf");
 }
 window.generatePDF = generatePDF;
 

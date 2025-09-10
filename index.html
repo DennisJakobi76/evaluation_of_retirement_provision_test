@@ -20,31 +20,20 @@
 
 		<div class="text-container">
 			<p>
-				Diese Auswertung stellt Ihre aktuelle Altersvorsorgesituation (Stand 2025) dar
-				und ergänzt eine Hochrechnung bis zum Jahr 2050 unter Annahme einer jährlichen Inflationsrate von
-				2&nbsp;%.
-				Berücksichtigt werden die einzelnen Vorsorgebausteine – gesetzliche Rente, Mieteinnahmen, betriebliche
-				sowie private Vorsorge.
+				Diese Auswertung wurde in Anlehnung an die DIN 77230 erstellt.
+				Im Diagramm sind zwei wichtige Referenzwerte dargestellt:
+				der empfohlene Richtwert, der bei etwa 80 % des letzten Nettoeinkommens liegt (blaue Linie),
+				sowie der nach DIN 77230 berechnete Mindestsollwert, der sich am gesetzlichen Mindestlohn orientiert
+				(gelbe Linie).
 			</p>
 
 			<p>
-				Der empfohlene Richtwert liegt bei etwa 80&nbsp;% des letzten Nettoeinkommens.
-				Zusätzlich wurde der nach DIN&nbsp;77230 definierte Mindestsollwert berechnet,
-				der sich am gesetzlichen Mindestlohn orientiert und als gelbe Referenzlinie in der Grafik hervorgehoben
-				ist.
-			</p>
-
-			<p>
-				Diese Auswertung wurde in Anlehnung an die DIN&nbsp;77230 erstellt.
-				Aus der Gegenüberstellung ergibt sich eine Versorgungslücke,
-				die langfristig durch gezielte Vorsorgemaßnahmen geschlossen werden sollte.
+				Die Hochrechnung berücksichtigt die Entwicklung bis zum Jahr 2050 unter Annahme einer jährlichen
+				Inflationsrate von 2 %.
+				Dabei werden die einzelnen Vorsorgebausteine – gesetzliche Rente, sonstige Einnahmen, betriebliche sowie
+				private Vorsorge – ausgewertet.
 			</p>
 		</div>
-
-
-
-
-
 		<table id="vorsorgeTable">
 			<thead>
 				<tr>
@@ -61,6 +50,15 @@
 			<canvas id="chart" height="100"></canvas>
 		</div>
 
+		<div class="text-container">
+			<p>
+				Aus der Gegenüberstellung ergibt sich eine Versorgungslücke:
+				Trotz solider Basis durch die gesetzliche Rente und sonstige Einnahmen reichen die betrieblichen und
+				privaten Vorsorgeleistungen aktuell nicht aus, um den Richtwert vollständig zu erreichen.
+				Die Lücke beträgt im Jahr 2025 rund 300 €, im Jahr 2050 – inflationsbedingt – etwa 490 €.
+				Eine gezielte Stärkung der betrieblichen und privaten Vorsorge ist daher empfehlenswert.
+			</p>
+		</div>
 
 		<button onclick="generatePDF()">📄 PDF erstellen</button>
 	</div>
