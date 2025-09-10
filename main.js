@@ -69,7 +69,7 @@ const din2050 = din2025 * faktor;
         ["Gesamtsumme", sumErreicht2025, sumErreicht2050],
         ["Netto-Einkommen", nettoMonat, nettoMonat * faktor],
         ["Richtwert (80% Netto)", richtwert2025, richtwert2050],
-        ["DIN 77230 Mindestsoll", din2025, din2050],
+        ["Mindestsoll", din2025, din2050],
     ];
     sums.forEach((r, i) => {
         const tr = document.createElement("tr");
@@ -339,7 +339,7 @@ async function generatePDF() {
         ["Gesamtsumme", sumErreicht2025, sumErreicht2050],
         ["Netto-Einkommen", nettoMonat, nettoMonat * faktor],
         ["Richtwert (80% Netto)", richtwert2025, richtwert2050],
-        ["DIN 77230 Mindestsoll", din2025, din2050],
+        ["Mindestsoll", din2025, din2050],
     ];
     sums.forEach((r, i) => {
         const y = startY + rowHeight * (categories.length + i + 1);
