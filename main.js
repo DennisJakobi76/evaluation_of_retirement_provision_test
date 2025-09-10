@@ -115,3 +115,14 @@ async function generatePDF() {
 
     pdf.save("altersvorsorge_onepager.pdf");
 }
+
+function calculateMinimumTargetValue() {
+    const minWage = 12;
+    const hoursPerDay = 8;
+    const daysPerMonth = 21;
+    const taxesAndSocialInsurance = 0.25;
+
+    result = minWage * hoursPerDay * daysPerMonth * (1 - taxesAndSocialInsurance);
+
+    return result;
+}
