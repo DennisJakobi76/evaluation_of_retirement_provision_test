@@ -3,6 +3,7 @@ const labels = ["Gesetzliche Rente", "Wohneigentum", "Betriebliche AV", "Private
 const erreicht = [1200, 600, 200, 150, 2150];
 const richtwert = [1800, 600, 400, 500, 3300];
 const luecke = richtwert.map((r, i) => Math.max(0, r - erreicht[i]));
+const taxesAndSocialInsurance = 0.25;
 
 // --- Chart.js Diagramm ---
 const ctx = document.getElementById("chart").getContext("2d");
@@ -120,9 +121,26 @@ function calculateMinimumTargetValue() {
     const minWage = 12;
     const hoursPerDay = 8;
     const daysPerMonth = 21;
-    const taxesAndSocialInsurance = 0.25;
 
     result = minWage * hoursPerDay * daysPerMonth * (1 - taxesAndSocialInsurance);
 
     return result;
 }
+
+function calcualuteNettoFromBrutto(brutto) {
+    return (brutto * (1 - taxesAndSocialInsurance)) / 12;
+}
+
+function calculateReferenceValueIncome(netto) {
+    return netto * 0.8;
+}
+
+// Werte zu berücksichtigen
+// Einkommen (Bruttomonatseinkommen, Anzahl der Gehälter, Sonstige Einkünfte(Miete, Pacht, etc.))
+// -> Nettoeinkommen
+// -> Richtwert (80% des Nettoeinkommens)
+// Gesetzliche Rente
+// Betriebliche Altersvorsorge (Monatlicher Beitrag, Geplante Rente)
+// Private Vorsorge (Monatlicher Beitrag, Geplante Rente)
+
+// Versorgungslücke = Richtwert - (Gesetzliche Rente + Betriebliche AV + Private Vorsorge)
