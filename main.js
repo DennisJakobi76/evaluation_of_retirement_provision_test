@@ -361,7 +361,7 @@ async function generatePDF() {
         "Aus der Gegenüberstellung ergibt sich eine Versorgungslücke: " +
         "Trotz solider Basis durch die gesetzliche Rente und sonstige Einnahmen reichen die betrieblichen " +
         "und privaten Vorsorgeleistungen aktuell nicht aus, um den Richtwert vollständig zu erreichen. " +
-        "Die Lücke beträgt im Jahr 2025 rund 300 €, im Jahr 2050 – inflationsbedingt – etwa 490 €. " +
+        "Die Lücke beträgt im Jahr 2025 rund 550 €, im Jahr 2050 – inflationsbedingt – etwa 902 €. " +
         "Eine gezielte Stärkung der betrieblichen und privaten Vorsorge ist daher empfehlenswert.";
     pdf.setFont("helvetica", "normal").setFontSize(11);
     pdf.text(textBottom, 15, chartY + 100, { maxWidth: 180 });
